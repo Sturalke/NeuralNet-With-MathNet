@@ -47,12 +47,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Exceptions\InvalidInputException.cs" />
+    <Compile Include="Exceptions\InvalidPassCountException.cs" />
+    <Compile Include="Exceptions\InvalidNodeCountException.cs" />
+    <Compile Include="Layers\NodeLayer.cs" />
     <Compile Include="Layers\ConvolutionLayer.cs" />
     <Compile Include="Layers\HiddenLayer.cs" />
     <Compile Include="Initialization.cs" />
     <Compile Include="Layers\InputLayer.cs" />
-    <Compile Include="Layers\Layer.cs" />
     <Compile Include="Layers\OutputLayer.cs" />
+    <Compile Include="Network.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Activation.cs" />

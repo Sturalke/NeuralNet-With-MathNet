@@ -7,23 +7,18 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace NNTest
 {
-    class OutputLayer : Layer
+    class OutputLayer : NodeLayer
     {
 
-        public override void PropagateFromPrevious()
+        public Matrix<float> Cost(Matrix<float> expected)
         {
-            throw new NotImplementedException();
-        }
-
-        public Vector<float> Cost(Vector<float> expected)
-        {
-            Vector<float> costVect = Vector<float>.Build.Dense(this.Nodes,0f);
+            Matrix<float> cost = Matrix<float>.Build.Dense(this.Nodes,this.Passes,0f);
             Func<float, float, float> AbsCostFunc = (x, y) =>
             {
                 return (float)Math.Pow(x - y, 2);
             };
-            this._alpha.Map2(AbsCostFunc, expected, costVect);
-            return costVect;
+            //this._alpha.Map2(AbsCostFunc, expected, costVect);
+            return cost;
         }
     }
 }

@@ -6,11 +6,8 @@ using System.Threading.Tasks;
 
 namespace NNTest
 {
-    class Program
+    class Network
     {
-        static void Main(string[] args)
-        {
-            //  Driver
-        }
+        List<NodeLayer> layers;
     }
 }
