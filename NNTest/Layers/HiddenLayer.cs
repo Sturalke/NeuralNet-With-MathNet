@@ -8,5 +8,6 @@ namespace NNTest
 {
     class HiddenLayer
     {
+
     }
 }

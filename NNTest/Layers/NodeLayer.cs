@@ -20,11 +20,16 @@ namespace NNTest
         /// Previous layer in the network.
         /// </summary>
         public NodeLayer Previous;
-        
+
         /// <summary>
         /// Next layer in the network.
         /// </summary>
         public NodeLayer Next;
+
+
+        public Func<Matrix<float>, Matrix<float>> ActivationFunction { get; private set; }
+
+        public Func<Matrix<float>, Matrix<float>> ActivationFunctionDerivative { get; private set; }
 
 
         /// <summary>
@@ -35,17 +40,17 @@ namespace NNTest
         /// <summary>
         /// Calculated delta values for each node during backprop.
         /// </summary>
-        protected Matrix<float> _delta;
+        public Matrix<float> _delta { get; set; }
 
         /// <summary>
         /// Column vectors hold node values after the activation function.
         /// </summary>
-        protected Matrix<float> _beta;
+        public Matrix<float> _beta { get; protected set; }
 
         /// <summary>
         /// Unmodified node values in column vectors.
         /// </summary>
-        protected Matrix<float> _alpha;
+        public Matrix<float> _alpha { get; protected set; }
 
         /// <summary>
         /// Number of nodes in this layer.
@@ -102,8 +107,8 @@ namespace NNTest
             }
             Passes = numPasses;
 
-            _alpha = Matrix<float>.Build.Dense(nodes + 1, numPasses);
-            _beta = Matrix<float>.Build.Dense(nodes + 1, numPasses);
+            _alpha = Matrix<float>.Build.Dense(nodes, numPasses);
+            _beta = Matrix<float>.Build.Dense(nodes, numPasses);
         }
 
         /// <summary>
@@ -146,12 +151,46 @@ namespace NNTest
         //  ------------------------
 
         /// <summary>
-        /// Activate the node values with the given activation function and store the result in another vector.
+        /// Activate the node values with the activation function and store the result in another matrix.
         /// </summary>
-        /// <param name="activator">Activation function.</param>
-        public void Activate(Func<float,float> activator)
+        public void Activate()
         {
-            _beta.Map(activator, _alpha);
+            _beta = ActivationFunction(_alpha);
+        }
+
+        /// <summary>
+        /// Sets ActivationFunciton and ActivationFunctionDerivative.
+        /// The boolean input is for the derivative.
+        /// True if the function should return the derivative, false if not.
+        /// </summary>
+        /// <param name="f">Activation function and its derivative.</param>
+        public void SetActivationFunction(Func<Matrix<float>,bool,Matrix<float>> f)
+        {
+            ActivationFunction = y => {
+                return f(y, false);
+            };
+            ActivationFunctionDerivative = y =>
+            {
+                return f(y, true);
+            };
+        }
+
+        /// <summary>
+        /// Sets ActivationFunction and ActivationFunctionDerivative.
+        /// The boolean input is for the derivative.
+        /// True if the function should return the derivative, false if not.
+        /// </summary>
+        /// <param name="f">Activation function and its derivative.</param>
+        public void SetActivationFunction(Func<float,bool,float> f)
+        {
+            ActivationFunction = y =>
+            {
+                return y.Map(x => f(x, false));
+            };
+            ActivationFunctionDerivative = y =>
+            {
+                return y.Map(x => f(x, true));
+            };
         }
 
         /// <summary>
@@ -168,8 +207,8 @@ namespace NNTest
             }
 
             Nodes = nodes;
-            _alpha = Matrix<float>.Build.Dense(Nodes + 1, Passes);
-            _beta = Matrix<float>.Build.Dense(Nodes + 1, Passes);
+            _alpha = Matrix<float>.Build.Dense(Nodes, Passes);
+            _beta = Matrix<float>.Build.Dense(Nodes, Passes);
             _omega = null;
         }
 
@@ -185,8 +224,8 @@ namespace NNTest
                 throw new InvalidPassCountException("Number of passes cannot be less than one.");
             }
             Passes = numPasses;
-            _alpha = Matrix<float>.Build.Dense(Nodes + 1, Passes);
-            _beta = Matrix<float>.Build.Dense(Nodes + 1, Passes);
+            _alpha = Matrix<float>.Build.Dense(Nodes, Passes);
+            _beta = Matrix<float>.Build.Dense(Nodes, Passes);
         }
 
         /// <summary>

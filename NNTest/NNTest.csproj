@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Exceptions\NullActivationFunctionException.cs" />
     <Compile Include="Exceptions\InvalidInputException.cs" />
     <Compile Include="Exceptions\InvalidPassCountException.cs" />
     <Compile Include="Exceptions\InvalidNodeCountException.cs" />

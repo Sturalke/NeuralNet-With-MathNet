@@ -17,7 +17,7 @@ namespace NNTest
             {
                 return (float)Math.Pow(x - y, 2);
             };
-            //this._alpha.Map2(AbsCostFunc, expected, costVect);
+            this._alpha.Map2(AbsCostFunc, expected, cost);
             return cost;
         }
     }
